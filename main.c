@@ -12,9 +12,6 @@ void Rotate(int angle);
 int AccX, AccY, AccZ;
 float  pitch, roll;
 float wx,wy,wz;
-char str[40];
-
-//sbit pin=P2^7;
 
 void main()
 {
@@ -46,77 +43,17 @@ void main()
 		printf("\n");
 
 		printf("roll=%d pitch=%d         \n",(int)roll,(int)pitch);
-		LCD_setCursor(5, 200);
-		LCD_print("   ");	
-		LCD_setTextSize(1);
-		Rotate(90);
-		LCD_setTextSize(2);
 		delay_ms(100);
+		
+		wx=read_mpu6050a(0x43);
+		wy=read_mpu6050a(0x45);
+		wz=read_mpu6050a(0x47);
 
-		/*
-		wx=read_mpu6050a(0x43)/gyroScale;
-		wy=read_mpu6050a(0x45)/gyroScale;
-		wz=read_mpu6050a(0x47)/gyroScale;
-
-		sprintf(str,"%d     ",(int)wx);
-		LCD_print2C(10,50,str,2,BLACK,WHITE);
-
-		sprintf(str,"%d    ",(int)wy);
-		LCD_print2C(10,100,str,2,BLACK,WHITE);
-
-		sprintf(str,"%d     ",(int)wz);
-		LCD_print2C(10,150,str,2,BLACK,WHITE);
-
-		angleZ = angleZ + dt * wz  / 1000  ; //integral Calculate angle, 1000(ms -> s)	
-
-		sprintf(str,"%d     ",(int)angleZ);
-		LCD_print2C(10,200,str,2,BLACK,WHITE);
-		*/
-
-
+		printf("wx=%d   \n",(int)wx);
+		printf("wy=%d   \n",(int)wy);
+		printf("wz=%d   \n",(int)wz);
 
 	}
-}
-
-
-
-void Rotate(int angle)
-{
-	float wz,anglez;
-
-	anglez=0;
-	//	if(angle>0)
-	//		motors(130,-130);
-	//	else if(angle<0)
-	//		motors(-130,130);
-
-	while(1)
-	{
-		TF0=0;
-		TL0=-60000;    
-		TH0=(-60000)>>8;
-		TR0=1;
-		//pin=1;
-		//read z, axis from gyro
-		wz=read_mpu6050a(0x47)/gyroScale; //deg/sec
-		//Integral
-
-		anglez=anglez+(wz*0.015);//15msec=dt
-
-		if((angle<0)&&(angle>anglez))break;
-		if((angle>0)&&(angle<anglez))break;
-		LCD_setCursor(5, 200);
-
-		printf("%d  ",(int)anglez);
-		//pin=0;
-
-		while(!TF0);// wait 15msec
-		TR0=0;
-
-	}	
-	TR0=0;
-
-	//motors(0,0);
 }
 
 
